@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Libro } from './libro.entity';
+import { LibroService } from './libro.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Libro])],
-  providers: [],
+  providers: [LibroService], 
   controllers: [],
-  exports: [],
+  exports: [LibroService]
 })
 export class LibroModule {}

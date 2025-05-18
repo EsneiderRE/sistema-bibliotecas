@@ -46,7 +46,7 @@ describe('BibliotecaLibroService', () => {
         autor: faker.person.fullName(),
         fechaPublicacion: faker.date.past(),
         isbn: faker.string.alphanumeric(13),
-        bibliotecas: []
+        biblioteca: null
       };
       librosList.push(libro);
       await libroRepository.save(libro);
@@ -72,10 +72,14 @@ describe('BibliotecaLibroService', () => {
     
     const result = await service.addBookToLibrary(biblioteca.id, libro.id);
     
-    expect(result.libros).not.toBeNull();
-    expect(result.libros.length).toBe(1);
-    expect(result.libros[0].id).toBe(libro.id);
-    expect(result.libros[0].titulo).toBe(libro.titulo);
+    expect(result).not.toBeNull();
+    expect(result.id).toBe(libro.id);
+    expect(result.titulo).toBe(libro.titulo);
+    
+    const updatedBiblioteca = await bibliotecaService.findOne(biblioteca.id);
+    expect(updatedBiblioteca.libros).not.toBeNull();
+    expect(updatedBiblioteca.libros.length).toBe(1);
+    expect(updatedBiblioteca.libros[0].id).toBe(libro.id);
   });
 
   it('addBookToLibrary should throw an exception for an invalid biblioteca', async () => {
@@ -129,9 +133,14 @@ describe('BibliotecaLibroService', () => {
     
     const result = await service.updateBooksFromLibrary(biblioteca.id, [libro2.id]);
     
-    expect(result.libros).not.toBeNull();
-    expect(result.libros.length).toBe(1);
-    expect(result.libros[0].id).toBe(libro2.id);
+    expect(result).not.toBeNull();
+    expect(result.length).toBe(1);
+    expect(result[0].id).toBe(libro2.id);
+    
+    const updatedBiblioteca = await bibliotecaService.findOne(biblioteca.id);
+    expect(updatedBiblioteca.libros).not.toBeNull();
+    expect(updatedBiblioteca.libros.length).toBe(1);
+    expect(updatedBiblioteca.libros[0].id).toBe(libro2.id);
   });
 
   it('updateBooksFromLibrary should throw an exception for an invalid biblioteca', async () => {
@@ -146,10 +155,11 @@ describe('BibliotecaLibroService', () => {
     
     await service.addBookToLibrary(biblioteca.id, libro.id);
     
-    const result = await service.deleteBookFromLibrary(biblioteca.id, libro.id);
+    await service.deleteBookFromLibrary(biblioteca.id, libro.id);
     
-    expect(result.libros).not.toBeNull();
-    expect(result.libros.length).toBe(0);
+    const updatedBiblioteca = await bibliotecaService.findOne(biblioteca.id);
+    expect(updatedBiblioteca.libros).not.toBeNull();
+    expect(updatedBiblioteca.libros.length).toBe(0);
   });
 
   it('deleteBookFromLibrary should throw an exception for libro not associated with biblioteca', async () => {

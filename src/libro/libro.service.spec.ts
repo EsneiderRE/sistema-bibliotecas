@@ -33,7 +33,7 @@ describe('LibroService', () => {
         autor: faker.person.fullName(),
         fechaPublicacion: faker.date.past(),
         isbn: faker.string.alphanumeric(13),
-        bibliotecas: []
+        biblioteca: null
       };
       librosList.push(libro);
       await repository.save(libro);

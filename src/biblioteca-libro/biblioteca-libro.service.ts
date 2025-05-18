@@ -15,7 +15,7 @@ export class BibliotecaLibroService {
     private readonly libroService: LibroService,
   ) {}
 
-  async addBookToLibrary(bibliotecaId: string, libroId: string): Promise<Biblioteca> {
+  async addBookToLibrary(bibliotecaId: string, libroId: string): Promise<Libro> {
     const biblioteca = await this.bibliotecaService.findOne(bibliotecaId);
     const libro = await this.libroService.findOne(libroId);
     
@@ -27,10 +27,10 @@ export class BibliotecaLibroService {
     
     if (!yaExiste) {
       biblioteca.libros.push(libro);
-      return this.bibliotecaRepository.save(biblioteca);
+      await this.bibliotecaRepository.save(biblioteca);
     }
     
-    return biblioteca;
+    return libro;
   }
 
   async findBooksFromLibrary(bibliotecaId: string): Promise<Libro[]> {
@@ -50,7 +50,7 @@ export class BibliotecaLibroService {
     return libro;
   }
 
-  async updateBooksFromLibrary(bibliotecaId: string, librosIds: string[]): Promise<Biblioteca> {
+  async updateBooksFromLibrary(bibliotecaId: string, librosIds: string[]): Promise<Libro[]> {
     const biblioteca = await this.bibliotecaService.findOne(bibliotecaId);
     
     const libros = await Promise.all(
@@ -58,15 +58,17 @@ export class BibliotecaLibroService {
     );
     
     biblioteca.libros = libros;
-    return this.bibliotecaRepository.save(biblioteca);
+    await this.bibliotecaRepository.save(biblioteca);
+    
+    return libros;
   }
 
-  async deleteBookFromLibrary(bibliotecaId: string, libroId: string): Promise<Biblioteca> {
+  async deleteBookFromLibrary(bibliotecaId: string, libroId: string): Promise<void> {
     const biblioteca = await this.bibliotecaService.findOne(bibliotecaId);
     
     await this.findBookFromLibrary(bibliotecaId, libroId);
     
     biblioteca.libros = biblioteca.libros.filter(libro => libro.id !== libroId);
-    return this.bibliotecaRepository.save(biblioteca);
+    await this.bibliotecaRepository.save(biblioteca);
   }
 }

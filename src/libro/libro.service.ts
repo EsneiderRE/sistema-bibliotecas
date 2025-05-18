@@ -12,13 +12,13 @@ export class LibroService {
   ) {}
 
   async findAll(): Promise<Libro[]> {
-    return await this.libroRepository.find({ relations: ['bibliotecas'] });
+    return await this.libroRepository.find({ relations: ['biblioteca'] });
   }
 
   async findOne(id: string): Promise<Libro> {
     const libro = await this.libroRepository.findOne({ 
       where: { id },
-      relations: ['bibliotecas'],
+      relations: ['biblioteca'],
     });
     
     if (!libro) {

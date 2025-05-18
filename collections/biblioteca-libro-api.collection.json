@@ -1,0 +1,429 @@
+{
+  "info": {
+    "_postman_id": "54378ab1-c8a0-4842-90c3-e9ff459cd789",
+    "name": "biblioteca-libro-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "POST - Crear biblioteca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var data = pm.response.json()",
+              "pm.globals.set(\"biblioteca_id\", data.id);",
+              "",
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Biblioteca Asociación\",\n  \"direccion\": \"Calle Prueba 123\",\n  \"ciudad\": \"Bogotá\",\n  \"horarioAtencion\": \"08:00-20:00\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/libraries",
+          "host": ["{{base_url}}"],
+          "path": ["libraries"]
+        }
+      }
+    },
+    {
+      "name": "POST - Crear libro",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var data = pm.response.json()",
+              "pm.globals.set(\"libro_id\", data.id);",
+              "",
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Libro de prueba\",\n  \"autor\": \"Autor de prueba\",\n  \"fechaPublicacion\": \"2000-01-01\",\n  \"isbn\": \"1234567890123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/books",
+          "host": ["{{base_url}}"],
+          "path": ["books"]
+        }
+      }
+    },
+    {
+      "name": "POST - Crear segundo libro",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var data = pm.response.json()",
+              "pm.globals.set(\"libro_id2\", data.id);",
+              "",
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Segundo libro de prueba\",\n  \"autor\": \"Otro autor de prueba\",\n  \"fechaPublicacion\": \"2002-01-01\",\n  \"isbn\": \"9876543210123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/books",
+          "host": ["{{base_url}}"],
+          "path": ["books"]
+        }
+      }
+    },
+    {
+      "name": "POST - Asociar libro a biblioteca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "   pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}/books/{{libro_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}", "books", "{{libro_id}}"]
+        }
+      }
+    },
+    {
+      "name": "POST - Asociar libro inexistente a biblioteca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "   pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Get expected error message\", function () {",
+              "   var data = pm.response.json();",
+              "   pm.expect(data.message).to.eql(\"El libro con el ID proporcionado no fue encontrado\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}/books/{{$guid}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}", "books", "{{$guid}}"]
+        }
+      }
+    },
+    {
+      "name": "GET - Obtener todos los libros de una biblioteca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "   pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Number of books > ' + 0, function () {",
+              "   var data = pm.response.json()",
+              "   pm.expect(data.length).to.greaterThan(0)",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}/books",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}", "books"]
+        }
+      }
+    },
+    {
+      "name": "GET - Obtener un libro de una biblioteca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "   pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}/books/{{libro_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}", "books", "{{libro_id}}"]
+        }
+      }
+    },
+    {
+      "name": "GET - Obtener libro no asociado a biblioteca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "   pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Get expected error message\", function () {",
+              "   var data = pm.response.json();",
+              "   pm.expect(data.message).to.eql(\"El libro con ID {{libro_id2}} no está asociado a la biblioteca con ID {{biblioteca_id}}\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}/books/{{libro_id2}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}", "books", "{{libro_id2}}"]
+        }
+      }
+    },
+    {
+      "name": "PUT - Actualizar libros de una biblioteca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "   pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"librosIds\": [\"{{libro_id}}\", \"{{libro_id2}}\"]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}/books",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}", "books"]
+        }
+      }
+    },
+    {
+      "name": "PUT - Actualizar con libro inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "   pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Get expected error message\", function () {",
+              "   var data = pm.response.json();",
+              "   pm.expect(data.message).to.eql(\"El libro con el ID proporcionado no fue encontrado\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"librosIds\": [\"{{$guid}}\", \"{{libro_id}}\"]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}/books",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}", "books"]
+        }
+      }
+    },
+    {
+      "name": "DELETE - Eliminar libro de biblioteca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 204\", function () {",
+              "   pm.response.to.have.status(204);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}/books/{{libro_id2}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}", "books", "{{libro_id2}}"]
+        }
+      }
+    },
+    {
+      "name": "DELETE - Eliminar libro no asociado a biblioteca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "   pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Get expected error message\", function () {",
+              "   var data = pm.response.json();",
+              "   pm.expect(data.message).to.eql(\"El libro con ID {{libro_id2}} no está asociado a la biblioteca con ID {{biblioteca_id}}\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}/books/{{libro_id2}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}", "books", "{{libro_id2}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api/v1"
+    }
+  ]
+}

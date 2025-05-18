@@ -1,0 +1,324 @@
+{
+  "info": {
+    "_postman_id": "98763ab1-c8a0-4842-90c3-e9ff459cd145",
+    "name": "biblioteca-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "POST - Crear biblioteca válida",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var data = pm.response.json()",
+              "pm.globals.set(\"biblioteca_id\", data.id);",
+              "",
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Biblioteca Central\",\n  \"direccion\": \"Calle Principal 123\",\n  \"ciudad\": \"Bogotá\",\n  \"horarioAtencion\": \"08:00-20:00\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/libraries",
+          "host": ["{{base_url}}"],
+          "path": ["libraries"]
+        }
+      }
+    },
+    {
+      "name": "POST - Crear biblioteca inválida",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"direccion\": \"Calle Principal 123\",\n  \"ciudad\": \"Bogotá\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/libraries",
+          "host": ["{{base_url}}"],
+          "path": ["libraries"]
+        }
+      }
+    },
+    {
+      "name": "GET - Obtener todas las bibliotecas",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Number of libraries > ' + 0, function () {",
+              "   var data = pm.response.json()",
+              "   pm.expect(data.length).to.greaterThan(0)",
+              "});",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "   pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries",
+          "host": ["{{base_url}}"],
+          "path": ["libraries"]
+        }
+      }
+    },
+    {
+      "name": "GET - Obtener biblioteca por ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "   pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}"]
+        }
+      }
+    },
+    {
+      "name": "GET - Obtener biblioteca con ID inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "   pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Get expected error message\", function () {",
+              "   var data = pm.response.json();",
+              "   pm.expect(data.message).to.eql(\"La biblioteca con el ID proporcionado no fue encontrada\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries/{{$guid}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{$guid}}"]
+        }
+      }
+    },
+    {
+      "name": "PUT - Actualizar biblioteca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "   pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Biblioteca Central Actualizada\",\n  \"direccion\": \"Nueva Dirección 456\",\n  \"ciudad\": \"Medellín\",\n  \"horarioAtencion\": \"09:00-21:00\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}"]
+        }
+      }
+    },
+    {
+      "name": "PUT - Actualizar biblioteca con ID inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "   pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Get expected error message\", function () {",
+              "   var data = pm.response.json();",
+              "   pm.expect(data.message).to.eql(\"La biblioteca con el ID proporcionado no fue encontrada\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Biblioteca Central Actualizada\",\n  \"direccion\": \"Nueva Dirección 456\",\n  \"ciudad\": \"Medellín\",\n  \"horarioAtencion\": \"09:00-21:00\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/libraries/{{$guid}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{$guid}}"]
+        }
+      }
+    },
+    {
+      "name": "DELETE - Eliminar biblioteca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 204\", function () {",
+              "   pm.response.to.have.status(204);",
+              "})"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries/{{biblioteca_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{biblioteca_id}}"]
+        }
+      }
+    },
+    {
+      "name": "DELETE - Eliminar biblioteca con ID inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "   pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Get expected error message\", function () {",
+              "   var data = pm.response.json();",
+              "   pm.expect(data.message).to.eql(\"La biblioteca con el ID proporcionado no fue encontrada\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/libraries/{{$guid}}",
+          "host": ["{{base_url}}"],
+          "path": ["libraries", "{{$guid}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api/v1"
+    }
+  ]
+}

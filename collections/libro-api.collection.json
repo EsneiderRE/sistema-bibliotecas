@@ -1,0 +1,324 @@
+{
+  "info": {
+    "_postman_id": "87652ab1-c8a0-4842-90c3-e9ff459cd345",
+    "name": "libro-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "POST - Crear libro válido",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var data = pm.response.json()",
+              "pm.globals.set(\"libro_id\", data.id);",
+              "",
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Cien años de soledad\",\n  \"autor\": \"Gabriel García Márquez\",\n  \"fechaPublicacion\": \"1967-05-30\",\n  \"isbn\": \"9780307474728\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/books",
+          "host": ["{{base_url}}"],
+          "path": ["books"]
+        }
+      }
+    },
+    {
+      "name": "POST - Crear libro inválido",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"autor\": \"Gabriel García Márquez\",\n  \"fechaPublicacion\": \"2025-05-30\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/books",
+          "host": ["{{base_url}}"],
+          "path": ["books"]
+        }
+      }
+    },
+    {
+      "name": "GET - Obtener todos los libros",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Number of books > ' + 0, function () {",
+              "   var data = pm.response.json()",
+              "   pm.expect(data.length).to.greaterThan(0)",
+              "});",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "   pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/books",
+          "host": ["{{base_url}}"],
+          "path": ["books"]
+        }
+      }
+    },
+    {
+      "name": "GET - Obtener libro por ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "   pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/books/{{libro_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["books", "{{libro_id}}"]
+        }
+      }
+    },
+    {
+      "name": "GET - Obtener libro con ID inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "   pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Get expected error message\", function () {",
+              "   var data = pm.response.json();",
+              "   pm.expect(data.message).to.eql(\"El libro con el ID proporcionado no fue encontrado\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/books/{{$guid}}",
+          "host": ["{{base_url}}"],
+          "path": ["books", "{{$guid}}"]
+        }
+      }
+    },
+    {
+      "name": "PUT - Actualizar libro",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "   pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Cien años de soledad - Edición actualizada\",\n  \"autor\": \"Gabriel García Márquez\",\n  \"fechaPublicacion\": \"1967-05-30\",\n  \"isbn\": \"9780307474728\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/books/{{libro_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["books", "{{libro_id}}"]
+        }
+      }
+    },
+    {
+      "name": "PUT - Actualizar libro con ID inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "   pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Get expected error message\", function () {",
+              "   var data = pm.response.json();",
+              "   pm.expect(data.message).to.eql(\"El libro con el ID proporcionado no fue encontrado\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Cien años de soledad - Edición actualizada\",\n  \"autor\": \"Gabriel García Márquez\",\n  \"fechaPublicacion\": \"1967-05-30\",\n  \"isbn\": \"9780307474728\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/books/{{$guid}}",
+          "host": ["{{base_url}}"],
+          "path": ["books", "{{$guid}}"]
+        }
+      }
+    },
+    {
+      "name": "DELETE - Eliminar libro",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 204\", function () {",
+              "   pm.response.to.have.status(204);",
+              "})"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/books/{{libro_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["books", "{{libro_id}}"]
+        }
+      }
+    },
+    {
+      "name": "DELETE - Eliminar libro con ID inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "   pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Get expected error message\", function () {",
+              "   var data = pm.response.json();",
+              "   pm.expect(data.message).to.eql(\"El libro con el ID proporcionado no fue encontrado\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/books/{{$guid}}",
+          "host": ["{{base_url}}"],
+          "path": ["books", "{{$guid}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api/v1"
+    }
+  ]
+}

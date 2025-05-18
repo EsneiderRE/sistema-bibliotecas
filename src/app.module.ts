@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BibliotecaModule } from './biblioteca/biblioteca.module';
 import { LibroModule } from './libro/libro.module';
+import { BibliotecaLibroModule } from './biblioteca-libro/biblioteca-libro.module';
 
 @Module({
   imports: [
@@ -12,13 +13,15 @@ import { LibroModule } from './libro/libro.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'postgres', 
+      password: 'postgres',
       database: 'bibliotecas',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      synchronize: true, 
+      dropSchema: false,
     }),
     BibliotecaModule,
     LibroModule,
+    BibliotecaLibroModule,
   ],
   controllers: [AppController],
   providers: [AppService],
